@@ -2,16 +2,13 @@ package main
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 	"unicode"
-
-	"fmt"
-	"net/url"
-
-	"strconv"
-
-	"net/http"
 
 	"github.com/labstack/echo"
 )
@@ -49,7 +46,6 @@ func main() {
 	e := echo.New()
 
 	e.Static("/static", "static")
-
 	e.GET("/search", search)
 
 	e.Start(":10001")
@@ -123,6 +119,8 @@ func parseSearchXML(path string) []Entry {
 	//buf, err := ioutil.ReadFile(path)
 	//panicIfError(err)
 	//
+
+	// 处理 xml 内容中的不可见字符，防止无法解析 xml
 	printOnly := func(r rune) rune {
 		if unicode.IsPrint(r) {
 			return r
